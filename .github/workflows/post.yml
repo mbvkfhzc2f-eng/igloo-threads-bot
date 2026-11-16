@@ -1,0 +1,51 @@
+name: Threads paylaşımı
+
+on:
+  # GitHub'ın zamanlayıcısı çalıştırmaları geciktirebiliyor ya da hiç başlatmayabiliyor. Bu yüzden bot her 15 dakikada bir
+  # yoklanır; yalnızca saati gelmiş gönderiyi paylaşır, aynı gönderi iki kez gitmez. Dakikalar saat başından uzak seçildi.
+  schedule:
+    - cron: '9,24,39,54 * * * *'
+  # Kesin saat: Claude'un "igloo Threads tetik" görevi her paylaşım saatinde (09:11 · 11:11 · 13:11 · 18:11 · 21:11)
+  # .tick dosyasını güncelleyip push eder; push olayları GitHub'ın zamanlayıcısı gibi gecikmez.
+  push:
+    branches: [main]
+    paths: ['.tick']
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Deneme: hiçbir şey paylaşma, token ve sıradaki paylaşımı göster'
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: threads-bot
+  cancel-in-progress: false
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main      # tetiklendiği anki değil en güncel state.json: art arda iki çalıştırma aynı gönderiyi atmasın
+
+      - name: Sıradaki paylaşımı gönder
+        env:
+          THREADS_TOKEN: ${{ secrets.THREADS_TOKEN }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: python3 bot.py
+
+      - name: Durumu kaydet
+        if: always() && inputs.dry_run != true
+        run: |
+          git config user.name "igloo-bot"
+          git config user.email "igloo-bot@users.noreply.github.com"
+          git add state.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Paylaşım durumu"
+            for i in 1 2 3; do git push && break; git pull --rebase; done
+          fi
