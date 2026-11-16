@@ -6,6 +6,11 @@ name: Threads istatistikleri
 on:
   schedule:
     - cron: '37 4 * * *'          # 07:37 Türkiye saati
+  # GitHub'ın zamanlayıcısı bu depoda gecikebiliyor ya da hiç çalışmayabiliyor. Bu yüzden sabahki ilk tetik (09:11)
+  # de istatistikleri çeker; günün diğer tetiklerinde bu iş akışı hemen biter.
+  push:
+    branches: [main]
+    paths: ['.tick']
   workflow_dispatch:
 
 permissions:
@@ -20,16 +25,29 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
+      - name: Günde bir kez
+        id: gate
+        run: |
+          if [ "${{ github.event_name }}" = "push" ] && [ "$(TZ=Europe/Istanbul date +%H)" != "09" ]; then
+            echo "run=false" >> "$GITHUB_OUTPUT"
+            echo "Sabah tetiği değil; istatistikler günde bir kez, 09:11 tetiğinde çekiliyor."
+          else
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - uses: actions/checkout@v5
+        if: steps.gate.outputs.run == 'true'
         with:
           ref: main
 
       - name: İstatistikleri çek
+        if: steps.gate.outputs.run == 'true'
         env:
           THREADS_TOKEN: ${{ secrets.THREADS_TOKEN }}
         run: python3 insights.py
 
       - name: Raporu kaydet
+        if: steps.gate.outputs.run == 'true'
         run: |
           git config user.name "igloo-bot"
           git config user.email "igloo-bot@users.noreply.github.com"

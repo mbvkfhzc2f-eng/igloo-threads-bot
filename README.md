@@ -34,7 +34,7 @@ Bu deponun **Settings › Secrets and variables › Actions › New repository s
 - Bir çalışma hata verirse GitHub e-posta atar. Son hatanın metni `state.json` içindeki `last_error` alanında da durur. Aynı gönderi 3 kez hata verirse atlanır.
 
 ## İstatistikler
-**Threads istatistikleri** iş akışı her sabah 07:37'de paylaşılan her gönderinin görüntülenme, beğeni, yorum, repost, alıntı ve paylaşım sayılarını ve takipçi sayısını çeker:
+**Threads istatistikleri** iş akışı her sabah 07:37'de (GitHub'ın zamanlayıcısı çalışmazsa 09:11 tetiğiyle) paylaşılan her gönderinin görüntülenme, beğeni, yorum, repost, alıntı ve paylaşım sayılarını ve takipçi sayısını çeker:
 - `insights.md`: seriye ve saate göre ortalamalar, en çok etkileşim alan 10 gönderi.
 - `insights.json`: ham veri ve günlük takipçi sayısı.
 
