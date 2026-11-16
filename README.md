@@ -15,8 +15,8 @@
 Claude uzantısının kurulu olduğu **Brave**'de [threads.com](https://www.threads.com)'a **igloo.collective** hesabıyla giriş yap. Hem token üretimi hem de günlük yanıt turları bu oturumu kullanır.
 
 ### 2. Threads erişim token'ı
-Lingoof için kullandığın Meta uygulaması (**lingoof.app**) igloo için de kullanılabilir:
-1. [developers.facebook.com](https://developers.facebook.com) › **My Apps** › **lingoof.app** › **App roles › Roles › Add People › Threads Tester** yolunu izle ve `igloo.collective` kullanıcı adını ekle.
+Lingoof'un Threads için kullandığı Meta uygulaması **LINGOOF Bot** (App ID 1133077682509852) igloo için de kullanılır. **İgloo App**'te Threads API kullanım durumu yok, o yüzden onu değil bunu seç:
+1. [LINGOOF Bot › App roles › Roles](https://developers.facebook.com/apps/1133077682509852/roles/roles/) sayfasında **Add People › Threads Tester** yolunu izle ve `igloo.collective` kullanıcı adını ekle.
 2. Threads'te igloo hesabındayken **Ayarlar › Hesap › Web sitesi izinleri › Davetler** bölümünden daveti kabul et.
 3. Panele dön: **Use cases › Access the Threads API › Settings**. `igloo.collective`'in yanındaki **Generate Access Token** düğmesine bas, açılan pencerede izin ver ve `TH` ile başlayan token'ı kopyala.
    - Pencere lingoof hesabını gösterirse Brave'de Threads'e igloo ile giriş yapılmamıştır; 1. adıma dön.
@@ -38,7 +38,7 @@ Bu deponun **Settings › Secrets and variables › Actions › New repository s
 - `insights.md`: seriye ve saate göre ortalamalar, en çok etkileşim alan 10 gönderi.
 - `insights.json`: ham veri ve günlük takipçi sayısı.
 
-Token'da `threads_manage_insights` izni olmalı (lingoof.app'te zaten açık). İzin yoksa iş akışı yalnızca uyarı verir, paylaşımlar etkilenmez.
+Token'da `threads_manage_insights` izni olmalı (LINGOOF Bot'ta zaten açık). İzin yoksa iş akışı yalnızca uyarı verir, paylaşımlar etkilenmez.
 
 ## Günlük yanıt turları (Claude görevi, bu depoda değil)
 Claude'un **igloo Threads yanıtları** görevi her gün 10:47, 15:47 ve 20:47'de Brave'deki igloo oturumuyla çalışır:
