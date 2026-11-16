@@ -2,5 +2,6 @@
  "site_url": "https://igloocollective.com",
  "image_base_url": "auto",
  "grace_hours": 4,
- "reply_delay_seconds": 45
+ "reply_delay_seconds": 45,
+ "expected_username": "igloo.collective"
 }

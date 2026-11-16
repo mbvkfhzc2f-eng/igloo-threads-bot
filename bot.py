@@ -192,8 +192,13 @@ def main():
     except RuntimeError as e:
         fail(state, now, None, f'Threads hesabına bağlanılamadı (token geçersiz ya da süresi dolmuş olabilir): {e}')
     print(f'Hesap: @{me.get("username")}  ·  Türkiye saati: {now:%d.%m.%Y %H:%M}')
+    # Yanlış hesabın token'ı eklenirse (ör. aynı Meta uygulamasındaki başka bir test hesabı) hiçbir şey paylaşılmaz.
+    expected = (cfg.get('expected_username') or '').strip().lstrip('@').lower()
+    if expected and (me.get('username') or '').lower() != expected:
+        fail(state, now, None, f'Token @{me.get("username")} hesabına ait, beklenen @{expected}. Hiçbir şey paylaşılmadı; '
+                               'THREADS_TOKEN secret\'ını doğru hesabın token\'ıyla değiştirin.')
 
-    grace = timedelta(hours=float(cfg.get('grace_hours', 3)))
+    grace =timedelta(hours=float(cfg.get('grace_hours', 3)))
     done = set(state['posted']) | {str(n) for n in state['skipped']}
     pending = [p for p in posts if str(p['n']) not in done]
     due = [p for p in pending if slot_time(p) <= now]
