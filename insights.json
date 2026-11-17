@@ -1,14 +1,44 @@
 {
  "posts": {
   "0": {
-   "views": 0,
+   "views": 31,
    "likes": 0,
    "replies": 0,
    "reposts": 0,
    "quotes": 0,
    "shares": 0,
    "at": "2026-11-17T08:49:10+03:00",
-   "fetched": "2026-11-17T09:12:50+03:00"
+   "fetched": "2026-11-17T16:48:56+03:00"
+  },
+  "1": {
+   "views": 163,
+   "likes": 0,
+   "replies": 0,
+   "reposts": 0,
+   "quotes": 0,
+   "shares": 0,
+   "at": "2026-11-17T09:12:50+03:00",
+   "fetched": "2026-11-17T16:48:56+03:00"
+  },
+  "2": {
+   "views": 58,
+   "likes": 0,
+   "replies": 0,
+   "reposts": 0,
+   "quotes": 0,
+   "shares": 0,
+   "at": "2026-11-17T11:12:13+03:00",
+   "fetched": "2026-11-17T16:48:56+03:00"
+  },
+  "3": {
+   "views": 42,
+   "likes": 0,
+   "replies": 0,
+   "reposts": 0,
+   "quotes": 0,
+   "shares": 0,
+   "at": "2026-11-17T13:13:03+03:00",
+   "fetched": "2026-11-17T16:48:56+03:00"
   }
  },
  "followers": [
