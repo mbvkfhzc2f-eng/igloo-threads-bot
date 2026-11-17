@@ -12,7 +12,7 @@
 ## Kurulum (bir kerelik, ~10 dakika)
 
 ### 1. Threads'e Brave'den giriş
-Claude uzantısının kurulu olduğu **Brave**'de [threads.com](https://www.threads.com)'a **igloo.collective** hesabıyla giriş yap. Hem token üretimi hem de günlük yanıt turları bu oturumu kullanır.
+Claude uzantısının kurulu olduğu **Brave**'de [threads.com](https://www.threads.com)'a **igloo.collective** hesabıyla giriş yap. Token üretimi bu oturumu kullanır. Günlük yanıt turları tarayıcıya ihtiyaç duymaz.
 
 ### 2. Threads erişim token'ı
 Lingoof'un Threads için kullandığı Meta uygulaması **LINGOOF Bot** (App ID 1133077682509852) igloo için de kullanılır. **İgloo App**'te Threads API kullanım durumu yok, o yüzden onu değil bunu seç:
@@ -40,13 +40,25 @@ Bu deponun **Settings › Secrets and variables › Actions › New repository s
 
 Token'da `threads_manage_insights` izni olmalı (LINGOOF Bot'ta zaten açık). İzin yoksa iş akışı yalnızca uyarı verir, paylaşımlar etkilenmez.
 
-## Günlük yanıt turları (Claude görevi, bu depoda değil)
-Claude'un **igloo Threads yanıtları** görevi her gün 10:47, 15:47 ve 20:47'de Brave'deki igloo oturumuyla çalışır:
-- Influencer pazarlaması, marka iş birlikleri ve içerik üreticiliği konuşan Türkçe gönderileri anahtar kelimelerle bulur ve faydalı, satış yapmayan yanıtlar yazar.
-- Günde toplam en fazla 10 yanıt (10:47'de en fazla 4, diğer turlarda en fazla 3). Önce igloo'ya yazan kişilere cevap verilir.
-- Link, @etiket, fiyat, komisyon ya da "bize yazın" çağrısı yok. Şikâyet, tartışma ve hassas konulara girilmez; böyle durumlar özetle sana bildirilir.
-- Mac açık, Brave çalışıyor ve Claude uzantısı bağlı olmalı. Değilse tur bir satırlık notla kendini atlar.
-- Durdurmak için Claude uygulamasında **igloo Threads yanıtları** görevini duraklat.
+## Günlük yanıt turları
+Claude'un **igloo Threads yanıt turu** görevi her gün 10:17, 15:17 ve 20:17'de (Türkiye saati) bulutta çalışır; Mac'in ya da tarayıcının açık olması gerekmez. Yanıtlar resmi Threads API'siyle bu depodaki iş akışlarından gider.
+- Önce igloo'nun gönderilerine ve yanıtlarına son 48 saatte gelen yorumlara bakılır. Soru soranlara kısa cevap yazılır; şikâyet, tartışma ve iş birliği talepleri turun özetinde sana bildirilir.
+- Sonra anahtar kelimelerle influencer pazarlaması, marka iş birlikleri ve içerik üreticiliği konuşan Türkçe gönderiler bulunur ve faydalı, satış yapmayan yanıtlar yazılır. **Bu kısım Meta onayı gerektiriyor** (aşağıda).
+- Sınırlar: günde toplam en fazla 10 yanıt; bir turda en fazla 2 yorum cevabı ve 4 yeni sohbet yanıtı; aynı kişiye 14 günde en fazla bir yeni sohbet yanıtı; yanıtlar arasında 1–2,5 dakika. Link, hashtag, @etiket, oran, tutar ve "bize yazın" gibi çağrılar kodda da engellenir.
+- Yazım kuralları `yanitlar/YAZIM_REHBERI.md` dosyasında. Kayıtlar: kararlar `yanitlar/kararlar.json`, gönderilenler ve linkleri `yanitlar/gonderilen.json`, son aramanın özeti `yanitlar/durum.json`. Başkalarının metinleri bu herkese açık depoda düz metin olarak durmasın diye `yanitlar/adaylar.enc.json` şifreli tutulur; onu yalnızca Claude'un görevi açabilir.
+
+### Meta onayı
+Threads, bir uygulamanın başkalarının gönderilerini aramasına ve onlara yanıt vermesine ancak Meta'nın uygulama incelemesinden (App Review) sonra izin veriyor. Onay gelene kadar arama yalnızca igloo'nun kendi gönderilerini döndürür ve sistem yalnızca yorumlara cevap verir. Ayrıntılı adımlar Claude'un hazırladığı "Threads yanıtları için Meta onayı" rehberinde:
+1. LINGOOF Bot uygulamasına `threads_keyword_search`, `threads_manage_replies` ve `threads_read_replies` izinlerini ekle.
+2. igloo için yeni token üret ve `THREADS_TOKEN` secret'ını güncelle (Kurulum › 2. adımdaki gibi).
+3. `threads_keyword_search` ve `threads_manage_replies` için Advanced Access iste.
+
+Onay gelince başka bir şey yapmana gerek yok: bir sonraki turda yeni sohbet yanıtları da kendiliğinden başlar.
+
+### Ayarlar, deneme ve durdurma
+- `yanitlar/ayar.json`: anahtar kelimeler, günlük sınır (`gunluk_limit`), tur başına sınırlar, aynı kişiye tekrar yanıt aralığı (`yazar_araligi_gun`), gönderiyi baştan eleyen kelimeler (`yasak_kelimeler`) ve yanıtlarda yasak ifadeler (`yasak_kaliplar`).
+- Deneme: **Actions › Threads yanıt araması › Run workflow** ("Deneme" işaretli kalsın). Kayıtta bulunan yorumlar, gönderiler ve hangisinin neden elendiği görünür; hiçbir şey kaydedilmez.
+- Durdurmak için `yanitlar/ayar.json` içinde `"acik": false` yap ya da Claude uygulamasında **igloo Threads yanıt turu** görevini duraklat.
 
 ## İsteğe bağlı: GH_PAT
 Token yaklaşık 60 gün geçerli; plan 31 Aralık'ta bittiği için kurulumda üretilen token yeter. Planı uzatırsan GitHub › Settings › Developer settings › Fine-grained tokens yolundan yalnızca bu depoya **Secrets: Read and write** izniyle bir token üretip `GH_PAT` adıyla ekle; bot Threads token'ını kendisi yeniler.
