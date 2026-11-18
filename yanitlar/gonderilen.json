@@ -1,3 +1,26 @@
 {
- "yanitlar": {}
+ "yanitlar": {
+  "18103054376536045": {
+   "kullanici": "zemjafarova",
+   "kaynak": "takip",
+   "durum": "gonderildi",
+   "yanit_id": "18081789737717699",
+   "yanit_link": "https://www.threads.com/@igloo.collective/post/Df4fvjGoPaE",
+   "link": "https://www.threads.com/@zemjafarova/post/Df4KYhMCPoP",
+   "zaman": "2026-11-18T12:22:58Z"
+  },
+  "18034807637910332": {
+   "kullanici": "neslidenbiraz",
+   "kaynak": "takip",
+   "durum": "gonderildi",
+   "yanit_id": "18506460553128391",
+   "yanit_link": "https://www.threads.com/@igloo.collective/post/Df4f5HxoLFZ",
+   "link": "https://www.threads.com/@neslidenbiraz/post/Df4OU4sjK2u",
+   "zaman": "2026-11-18T12:24:14Z"
+  }
+ },
+ "son_calisma": {
+  "zaman": "2026-11-18T12:24:14Z",
+  "gonderilen": 2
+ }
 }
