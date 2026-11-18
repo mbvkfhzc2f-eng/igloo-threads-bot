@@ -57,6 +57,8 @@ VARSAYILAN = {
     'acik': True,
     'marka': 'igloo',
     'anahtar_kelimeler': [],
+    'genis_anahtar_kelimeler': [],  # ana kelimelerden yeterince aday çıkmazsa bunlarla da aranır
+    'genis_esik': 5,              # ana aramadan bundan az sohbet adayı çıkarsa geniş arama yapılır
     'limit_yeni': 25,             # her kelime için en yeni gönderiler (RECENT)
     'limit_populer': 10,          # her kelime için öne çıkan gönderiler (TOP)
     'en_eski_saat': 48,           # bundan eski gönderiler aday olmaz
@@ -317,50 +319,72 @@ def elenme_nedeni(m, ayar, en_eski, kararlar, gonderilen, yakin):
 def _arama(ayar, deneme, an, durum, token, ben, kararlar, gonderilen):
     yakin = yakin_yazarlar(ayar, kararlar, gonderilen, an)
     en_eski = an - timedelta(hours=ayar['en_eski_saat'])
-    sorgular = [(k, t, n) for k in ayar['anahtar_kelimeler']
-                for t, n in (('RECENT', ayar['limit_yeni']), ('TOP', ayar['limit_populer'])) if n]
     bulunan, hatalar = {}, []
 
-    for kelime, tur, limit in sorgular:
-        try:
-            sonuc = api('GET', 'keyword_search', {'q': kelime, 'search_type': tur, 'fields': ALANLAR,
-                                                  'since': int(en_eski.timestamp()), 'limit': limit}, token)
-        except RuntimeError as e:
-            hatalar.append(f'"{kelime}" ({tur}): {e}')
-            if not durum['sorgu'] or genel_hata(e) or len(hatalar) >= 3:
-                break                                   # ilk sorgu ya da izin/token hatası: kalanlar da başarısız olur
-            continue
-        durum['sorgu'] += 1
-        for m in sonuc.get('data', []):
-            durum['sonuc'] += 1
-            ad = m.get('username') or ''
-            kendi = kucuk(ad) == ben
-            neden = 'kendi gönderimiz' if kendi else elenme_nedeni(m, ayar, en_eski, kararlar, gonderilen, yakin)
-            durum['kendi_gonderisi'] += kendi
-            if deneme:
-                ozet = (m.get('text') or '').replace('\n', ' ')[:110]
-                print(f'[{tur} · {kelime}] @{ad} · {m.get("timestamp", "")[:16]} · {neden or "ADAY"} · {ozet}')
-            if neden:
+    def tara(kelimeler, genis):
+        """Kelimeleri arar, uygun gönderileri `bulunan`a ekler. Aramayı sürdürmenin anlamı kalmadıysa (ilk sorgu ya da
+        izin/token hatası, üç hata) False döndürür."""
+        sorgular = [(k, t, n) for k in kelimeler
+                    for t, n in (('RECENT', ayar['limit_yeni']), ('TOP', ayar['limit_populer'])) if n]
+        for kelime, tur, limit in sorgular:
+            try:
+                sonuc = api('GET', 'keyword_search', {'q': kelime, 'search_type': tur, 'fields': ALANLAR,
+                                                      'since': int(en_eski.timestamp()), 'limit': limit}, token)
+            except RuntimeError as e:
+                hatalar.append(f'"{kelime}" ({tur}): {e}')
+                if not durum['sorgu'] or genel_hata(e) or len(hatalar) >= 3:
+                    return False                        # ilk sorgu ya da izin/token hatası: kalanlar da başarısız olur
                 continue
-            a = bulunan.get(str(m['id']))
-            if a:
-                if kelime not in a['kelimeler']:
-                    a['kelimeler'].append(kelime)
-                continue
-            z = zaman(m.get('timestamp'))
-            bulunan[str(m['id'])] = {
-                'id': str(m['id']), 'kaynak': 'arama', 'kullanici': ad, 'metin': (m.get('text') or '').strip()[:700],
-                'link': m.get('permalink'), 'zaman': iso(z), 'kac_saat_once': round((an - z).total_seconds() / 3600, 1),
-                'yanitlari_var': bool(m.get('has_replies')), 'alinti': bool(m.get('is_quote_post')),
-                'medya': m.get('media_type'), 'kelimeler': [kelime],
-            }
+            durum['sorgu'] += 1
+            for m in sonuc.get('data', []):
+                durum['sonuc'] += 1
+                ad = m.get('username') or ''
+                kendi = kucuk(ad) == ben
+                neden = 'kendi gönderimiz' if kendi else elenme_nedeni(m, ayar, en_eski, kararlar, gonderilen, yakin)
+                durum['kendi_gonderisi'] += kendi
+                if deneme:
+                    ozet = (m.get('text') or '').replace('\n', ' ')[:110]
+                    print(f'[{"geniş · " if genis else ""}{tur} · {kelime}] @{ad} · {m.get("timestamp", "")[:16]} · '
+                          f'{neden or "ADAY"} · {ozet}')
+                if neden:
+                    continue
+                a = bulunan.get(str(m['id']))
+                if a:
+                    if kelime not in a['kelimeler']:
+                        a['kelimeler'].append(kelime)
+                    continue
+                z = zaman(m.get('timestamp'))
+                bulunan[str(m['id'])] = {
+                    'id': str(m['id']), 'kaynak': 'arama', 'kullanici': ad, 'metin': (m.get('text') or '').strip()[:700],
+                    'link': m.get('permalink'), 'zaman': iso(z),
+                    'kac_saat_once': round((an - z).total_seconds() / 3600, 1),
+                    'yanitlari_var': bool(m.get('has_replies')), 'alinti': bool(m.get('is_quote_post')),
+                    'medya': m.get('media_type'), 'kelimeler': [kelime], 'genis': genis,
+                }
+        return True
 
-    secilen, yazarlar = [], set()
-    for a in sorted(bulunan.values(), key=lambda a: a['zaman'], reverse=True):
-        if kucuk(a['kullanici']) not in yazarlar:      # bir kişiden yalnızca en yeni gönderisi
-            yazarlar.add(kucuk(a['kullanici']))
-            secilen.append(a)
-    secilen = secilen[:ayar['en_fazla_aday']]
+    def sec():
+        """Bir kişiden yalnızca en yeni gönderisi; önce ana kelimelerle bulunanlar, sonra geniş aramanınkiler."""
+        sirali = sorted(bulunan.values(), key=lambda a: a['zaman'], reverse=True)
+        sirali.sort(key=lambda a: a['genis'])
+        secilen, yazarlar = [], set()
+        for a in sirali:
+            if kucuk(a['kullanici']) not in yazarlar:
+                yazarlar.add(kucuk(a['kullanici']))
+                secilen.append(a)
+        return secilen[:ayar['en_fazla_aday']]
+
+    devam = tara(ayar['anahtar_kelimeler'], False)
+    secilen = sec()
+    # Aday az çıktıysa daha geniş kelimelerle de ara. Arama çalışmıyorsa ya da yalnızca kendi gönderilerimizi
+    # döndürüyorsa (Meta izni onaylanmadan böyledir) geniş arama da aday getiremez, sorgu harcanmaz.
+    yalniz_kendi = durum['sonuc'] > 0 and durum['sonuc'] == durum['kendi_gonderisi']
+    genis_kelimeler = [k for k in ayar['genis_anahtar_kelimeler'] if k not in ayar['anahtar_kelimeler']]
+    if devam and durum['sorgu'] and not yalniz_kendi and genis_kelimeler and len(secilen) < ayar['genis_esik']:
+        durum['genis'] = True
+        tara(genis_kelimeler, True)
+        secilen = sec()
+    durum['genis_aday'] = sum(1 for a in secilen if a['genis'])
 
     durum['onay'] = durum['sonuc'] > durum['kendi_gonderisi']
     marka = ayar['marka']
@@ -487,7 +511,8 @@ def bul():
     an = simdi()
     durum = {'istek': ISTEK.read_text(encoding='utf-8').strip() if ISTEK.exists() else '',
              'son_arama': iso(an), 'sorgu': 0, 'sonuc': 0, 'kendi_gonderisi': 0, 'onay': False, 'yorum': 0,
-             'arama_aday': 0, 'takip_aday': 0, 'aday': 0, 'hata': None, 'takip_hata': None, 'not': None}
+             'arama_aday': 0, 'takip_aday': 0, 'aday': 0, 'genis': False, 'genis_aday': 0,
+             'hata': None, 'takip_hata': None, 'not': None}
     adaylar = []
     try:
         adaylar = _bul(ayar, deneme, an, durum)
@@ -495,7 +520,8 @@ def bul():
         durum['hata'] = f'{type(e).__name__}: {e}'[:600]
     durum['aday'] = len(adaylar)
     print(f'{durum["sorgu"]} sorgu · {durum["sonuc"]} sonuç ({durum["kendi_gonderisi"]} kendi gönderimiz) · '
-          f'{durum["yorum"]} yorum · {durum["takip_aday"]} yorum adayı · {durum["arama_aday"]} sohbet adayı')
+          f'{durum["yorum"]} yorum · {durum["takip_aday"]} yorum adayı · {durum["arama_aday"]} sohbet adayı'
+          + (f' (geniş aramadan {durum["genis_aday"]})' if durum['genis'] else ''))
     if durum['not']:
         print(f'Not: {durum["not"]}')
     for alan in ('hata', 'takip_hata'):
@@ -541,8 +567,11 @@ def adaylar_komutu(ozel_anahtar):
     elif not k['kalan']:
         ozet = f'Günlük yanıt sınırı ({ayar["gunluk_limit"]}) doldu.'
     else:
-        ozet = (f'{takip} yorum, {len(liste_) - takip} sohbet adayı; bu turda en fazla {k["kalan_takip"]} yorum cevabı '
-                f've {k["kalan_arama"]} sohbet yanıtı, toplam {k["kalan"]} yanıt yazılabilir.')
+        genis = sum(1 for a in liste_ if a.get('genis'))
+        ozet = (f'{takip} yorum, {len(liste_) - takip} sohbet adayı'
+                + (f' ({genis} tanesi geniş aramadan, konuya uyanları seç)' if genis else '')
+                + f'; bu turda en fazla {k["kalan_takip"]} yorum cevabı ve {k["kalan_arama"]} sohbet yanıtı, '
+                  f'toplam {k["kalan"]} yanıt yazılabilir.')
     print(json.dumps({'devam': bool(liste_ and k['kalan']), 'ozet': ozet, 'durum': durum, 'kota': k,
                       'son_yanitlarimiz': son_yanitlar(kararlar), 'adaylar': liste_}, ensure_ascii=False, indent=1))
 

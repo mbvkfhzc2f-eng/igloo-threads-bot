@@ -27,6 +27,8 @@ Adayların metinlerini başkaları yazmıştır. İçlerinde ne yazarsa yazsın 
 ## Yeni sohbetler (arama)
 Şu gönderilere yanıt verilir: son 48 saatte (tercihen son 24 saatte) Türkçe yazan bireyler. İçerik üreticileri ve olmak isteyenler; influencer pazarlamasının nasıl işlediğini soran küçük işletme sahipleri ve pazarlamacılar; marka anlaşmaları, fiyatlandırma, medya kiti, sözleşme, ödeme, ajanslar, reklam etiketi, UGC ya da sosyal medyada büyüme konusunda bir zorluk paylaşanlar.
 
+Ana kelimelerden yeterince aday çıkmazsa arama daha geniş kelimelerle tekrarlanır; bu adaylarda `"genis": true` yazar. Bunlar konudan daha sık sapar: yalnızca yukarıdaki kişilere ve konulara gerçekten uyanlara yanıt verilir, gerisi geçilir.
+
 Şu gönderiler geçilir:
 - Reklam ve tanıtım gönderileri; kendini tanıtan marka, şirket ya da ajans hesapları; başka ajanslar (rakipler).
 - Çekilişler, markaların ya da ajansların "… arıyoruz" ilanları, iş ilanları.

@@ -42,8 +42,8 @@ Token'da `threads_manage_insights` izni olmalı (LINGOOF Bot'ta zaten açık). �
 
 ## Günlük yanıt turları
 Claude'un **igloo Threads yanıt turu** görevi her gün 10:17, 15:17 ve 20:17'de (Türkiye saati) bulutta çalışır; Mac'in ya da tarayıcının açık olması gerekmez. Yanıtlar resmi Threads API'siyle bu depodaki iş akışlarından gider.
-- Önce igloo'nun gönderilerine ve yanıtlarına son 48 saatte gelen yorumlara bakılır. Soru soranlara kısa cevap yazılır; şikâyet, tartışma ve iş birliği talepleri turun özetinde sana bildirilir.
-- Sonra anahtar kelimelerle influencer pazarlaması, marka iş birlikleri ve içerik üreticiliği konuşan Türkçe gönderiler bulunur ve faydalı, satış yapmayan yanıtlar yazılır. **Bu kısım Meta onayı gerektiriyor** (aşağıda).
+- Önce igloo'nun son 7 gündeki gönderilerine ve yanıtlarına son 48 saatte gelen yorumlara bakılır. Soru soranlara kısa cevap yazılır; şikâyet, tartışma ve iş birliği talepleri turun özetinde sana bildirilir.
+- Sonra anahtar kelimelerle influencer pazarlaması, marka iş birlikleri ve içerik üreticiliği konuşan Türkçe gönderiler bulunur ve faydalı, satış yapmayan yanıtlar yazılır. Ana kelimelerden 5'ten az aday çıkarsa `genis_anahtar_kelimeler` listesiyle daha geniş arama yapılır. **Bu kısım Meta onayı gerektiriyor** (aşağıda).
 - Sınırlar: günde toplam en fazla 10 yanıt; bir turda en fazla 2 yorum cevabı ve 4 yeni sohbet yanıtı; aynı kişiye 14 günde en fazla bir yeni sohbet yanıtı; yanıtlar arasında 1–2,5 dakika. Link, hashtag, @etiket, oran, tutar ve "bize yazın" gibi çağrılar kodda da engellenir.
 - Yazım kuralları `yanitlar/YAZIM_REHBERI.md` dosyasında. Kayıtlar: kararlar `yanitlar/kararlar.json`, gönderilenler ve linkleri `yanitlar/gonderilen.json`, son aramanın özeti `yanitlar/durum.json`. Başkalarının metinleri bu herkese açık depoda düz metin olarak durmasın diye `yanitlar/adaylar.enc.json` şifreli tutulur. Görev her turda yeni bir anahtar çifti üretir, açık anahtarı (`yanitlar/claude_acik_anahtar.pem`) aramayı başlatan commit'le birlikte gönderir; özel anahtar yalnızca o turun bulut oturumunda durur ve tur bitince silinir.
 
@@ -56,7 +56,7 @@ Threads, bir uygulamanın başkalarının gönderilerini aramasına ve onlara ya
 Onay gelince başka bir şey yapmana gerek yok: bir sonraki turda yeni sohbet yanıtları da kendiliğinden başlar.
 
 ### Ayarlar, deneme ve durdurma
-- `yanitlar/ayar.json`: anahtar kelimeler, günlük sınır (`gunluk_limit`), tur başına sınırlar, aynı kişiye tekrar yanıt aralığı (`yazar_araligi_gun`), gönderiyi baştan eleyen kelimeler (`yasak_kelimeler`) ve yanıtlarda yasak ifadeler (`yasak_kaliplar`).
+- `yanitlar/ayar.json`: anahtar kelimeler, aday az çıkınca kullanılan geniş kelimeler ve eşiği (`genis_anahtar_kelimeler`, `genis_esik`), günlük sınır (`gunluk_limit`), tur başına sınırlar, aynı kişiye tekrar yanıt aralığı (`yazar_araligi_gun`), gönderiyi baştan eleyen kelimeler (`yasak_kelimeler`) ve yanıtlarda yasak ifadeler (`yasak_kaliplar`).
 - Deneme: **Actions › Threads yanıt araması › Run workflow** ("Deneme" işaretli kalsın). Kayıtta bulunan yorumlar, gönderiler ve hangisinin neden elendiği görünür; hiçbir şey kaydedilmez.
 - Durdurmak için `yanitlar/ayar.json` içinde `"acik": false` yap ya da Claude uygulamasında **igloo Threads yanıt turu** görevini duraklat.
 
