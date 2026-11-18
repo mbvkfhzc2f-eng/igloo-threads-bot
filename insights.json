@@ -1,64 +1,94 @@
 {
  "posts": {
   "0": {
-   "views": 67,
+   "views": 76,
    "likes": 2,
    "replies": 0,
    "reposts": 0,
    "quotes": 0,
    "shares": 0,
    "at": "2026-11-17T08:49:10+03:00",
-   "fetched": "2026-11-18T09:14:07+03:00"
+   "fetched": "2026-11-18T16:23:56+03:00"
   },
   "1": {
-   "views": 192,
+   "views": 194,
    "likes": 0,
    "replies": 0,
    "reposts": 0,
    "quotes": 0,
    "shares": 0,
    "at": "2026-11-17T09:12:50+03:00",
-   "fetched": "2026-11-18T09:14:07+03:00"
+   "fetched": "2026-11-18T16:23:56+03:00"
   },
   "2": {
-   "views": 76,
+   "views": 82,
    "likes": 0,
    "replies": 0,
    "reposts": 0,
    "quotes": 0,
    "shares": 0,
    "at": "2026-11-17T11:12:13+03:00",
-   "fetched": "2026-11-18T09:14:07+03:00"
+   "fetched": "2026-11-18T16:23:56+03:00"
   },
   "3": {
-   "views": 78,
+   "views": 101,
    "likes": 0,
-   "replies": 0,
+   "replies": 3,
    "reposts": 0,
    "quotes": 0,
    "shares": 0,
    "at": "2026-11-17T13:13:03+03:00",
-   "fetched": "2026-11-18T09:14:07+03:00"
+   "fetched": "2026-11-18T16:23:56+03:00"
   },
   "4": {
-   "views": 93,
+   "views": 111,
    "likes": 0,
    "replies": 0,
    "reposts": 0,
    "quotes": 0,
    "shares": 0,
    "at": "2026-11-17T18:14:31+03:00",
-   "fetched": "2026-11-18T09:14:07+03:00"
+   "fetched": "2026-11-18T16:23:56+03:00"
   },
   "5": {
-   "views": 153,
+   "views": 172,
+   "likes": 1,
+   "replies": 2,
+   "reposts": 0,
+   "quotes": 0,
+   "shares": 0,
+   "at": "2026-11-17T21:12:51+03:00",
+   "fetched": "2026-11-18T16:23:56+03:00"
+  },
+  "6": {
+   "views": 61,
    "likes": 0,
    "replies": 0,
    "reposts": 0,
    "quotes": 0,
    "shares": 0,
-   "at": "2026-11-17T21:12:51+03:00",
-   "fetched": "2026-11-18T09:14:07+03:00"
+   "at": "2026-11-18T09:14:06+03:00",
+   "fetched": "2026-11-18T16:23:56+03:00"
+  },
+  "7": {
+   "views": 34,
+   "likes": 0,
+   "replies": 0,
+   "reposts": 0,
+   "quotes": 0,
+   "shares": 0,
+   "at": "2026-11-18T11:13:12+03:00",
+   "fetched": "2026-11-18T16:23:56+03:00"
+  },
+  "8": {
+   "views": 8,
+   "likes": 0,
+   "replies": 0,
+   "reposts": 0,
+   "quotes": 0,
+   "shares": 0,
+   "at": "2026-11-18T13:12:11+03:00",
+   "fetched": "2026-11-18T16:23:56+03:00"
   }
  },
  "followers": [
@@ -68,7 +98,7 @@
   },
   {
    "date": "2026-11-18",
-   "count": 505
+   "count": 511
   }
  ]
 }
