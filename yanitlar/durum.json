@@ -1,17 +1,17 @@
 {
- "istek": "2026-11-21T12:19:08Z",
- "son_arama": "2026-11-21T12:19:30Z",
+ "istek": "2026-11-21T17:19:55Z",
+ "son_arama": "2026-11-21T17:20:04Z",
  "sorgu": 0,
  "sonuc": 0,
  "kendi_gonderisi": 0,
  "onay": false,
- "yorum": 17,
+ "yorum": 18,
  "arama_aday": 0,
- "takip_aday": 1,
- "aday": 1,
+ "takip_aday": 0,
+ "aday": 0,
  "genis": false,
  "genis_aday": 0,
- "hata": "1 sorgu başarısız. İlki: \"influencer ajansı\" (RECENT): Threads API 403 (keyword_search): {\"error\":{\"message\":\"Application does not have permission for this action\",\"code\":10,\"type\":\"THApiException\",\"fbtrace_id\":\"AT70sw_N5yXk_Df9b9zsQl8\"}}",
+ "hata": "1 sorgu başarısız. İlki: \"influencer ajansı\" (RECENT): Threads API 403 (keyword_search): {\"error\":{\"message\":\"Application does not have permission for this action\",\"code\":10,\"type\":\"THApiException\",\"fbtrace_id\":\"AXMaCgsBmIuxi8KbnAMRGTh\"}}",
  "takip_hata": null,
  "not": "Anahtar kelime araması çalışmadı: token'da threads_keyword_search izni yok. \"Threads yanıtları için Meta onayı\" rehberinin 1. ve 2. adımlarını uygula."
 }
